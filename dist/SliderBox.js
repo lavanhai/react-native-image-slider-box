@@ -1,52 +1,51 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import {
   View,
   Image,
   ActivityIndicator,
   TouchableHighlight,
   Dimensions,
-} from 'react-native';
+  TouchableWithoutFeedback,
+} from "react-native";
 
-import Carousel, {Pagination} from 'react-native-snap-carousel'; //Thank From distributer(s) of this lib
-import styles from './SliderBox.style';
+import Carousel, { Pagination } from "react-native-snap-carousel"; //Thank From distributer(s) of this lib
+import styles from "./SliderBox.style";
 
-// -------------------Props--------------------
+// -------------------Props---------------------
 // images
 // onCurrentImagePressed
 // sliderBoxHeight
 // parentWidth
-// dotColor 
+// dotColor
 // inactiveDotColor
 // dotStyle
 // paginationBoxVerticalPadding
 // circleLoop
 // autoplay
 // ImageComponent
-// ImageLoader
 // paginationBoxStyle
 // resizeMethod
 // resizeMode
 // ImageComponentStyle,
 // imageLoadingColor = "#E91E63"
-// firstItem = 0
-// activeOpacity
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get("window").width;
 
 export class SliderBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentImage: props.firstItem || 0,
+      currentImage: 0,
       loading: [],
     };
-    this.onCurrentImagePressedHandler = this.onCurrentImagePressedHandler.bind(this);
+    this.onCurrentImagePressedHandler = this.onCurrentImagePressedHandler.bind(
+      this,
+    );
     this.onSnap = this.onSnap.bind(this);
-    this._renderItem = this._renderItem.bind(this);
   }
 
   componentDidMount() {
-    //let a = [...Array(this.props.images.length).keys()].map((i) => false);
+    let a = [...Array(this.props.images.length).keys()].map(i => false);
   }
 
   onCurrentImagePressedHandler() {
@@ -56,71 +55,64 @@ export class SliderBox extends Component {
   }
 
   onSnap(index) {
-    const {currentImageEmitter} = this.props;
-    this.setState({currentImage: index}, () => {
-      if (currentImageEmitter) {
-        currentImageEmitter(this.state.currentImage);
-      }
+    const { currentImageEmitter } = this.props;
+    this.setState({ currentImage: index }, () => {
+      if (currentImageEmitter) currentImageEmitter(this.state.currentImage);
     });
   }
 
-  _renderItem({item, index}) {
+  _renderItem({ item, index }) {
     const {
       ImageComponent,
       ImageComponentStyle = {},
-      LoaderComponent,
       sliderBoxHeight,
       disableOnPress,
       resizeMethod,
       resizeMode,
-      imageLoadingColor = '#E91E63',
-      underlayColor = "transparent",
-      activeOpacity=0.85
+      imageLoadingColor = "#E91E63",
     } = this.props;
     return (
       <View
         style={{
-          position: 'relative',
-          justifyContent: 'center',
-        }}>
-        <TouchableHighlight
+          position: "relative",
+          justifyContent: "center",
+        }}
+      >
+        <TouchableWithoutFeedback
           key={index}
-          underlayColor={underlayColor}
-          disabled={disableOnPress}
-          onPress={this.onCurrentImagePressedHandler}
-          activeOpacity={activeOpacity}
+          onPress={() => !disableOnPress && this.onCurrentImagePressedHandler()}
         >
-
           <ImageComponent
             style={[
               {
-                width: '100%',
+                width: "100%",
                 height: sliderBoxHeight || 200,
-                alignSelf: 'center',
+                alignSelf: "center",
               },
               ImageComponentStyle,
             ]}
-            source={typeof item === 'string' ? {uri: item} : item}
-            resizeMethod={resizeMethod || 'resize'}
-            resizeMode={resizeMode || 'cover'}
-            //onLoad={() => {}}
-            //onLoadStart={() => {}}
+            source={typeof item === "string" ? { uri: item } : item}
+            resizeMethod={resizeMethod || "resize"}
+            resizeMode={resizeMode || "cover"}
+            onLoad={() => {
+            }}
+            onLoadStart={() => {
+            }}
             onLoadEnd={() => {
               let t = this.state.loading;
               t[index] = true;
-              this.setState({loading: t});
+              this.setState({ loading: t });
             }}
             {...this.props}
           />
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
         {!this.state.loading[index] && (
-          <LoaderComponent
-            index={index}
+          <ActivityIndicator
             size="large"
             color={imageLoadingColor}
             style={{
-              position: 'absolute',
-              alignSelf: 'center',
+              position: "absolute",
+              alignSelf: "center",
             }}
           />
         )}
@@ -129,7 +121,7 @@ export class SliderBox extends Component {
   }
 
   get pagination() {
-    const {currentImage} = this.state;
+    const { currentImage } = this.state;
     const {
       images,
       dotStyle,
@@ -153,7 +145,7 @@ export class SliderBox extends Component {
         containerStyle={[
           styles.paginationBoxStyle,
           paginationBoxVerticalPadding
-            ? {paddingVertical: paginationBoxVerticalPadding}
+            ? { paddingVertical: paginationBoxVerticalPadding }
             : {},
           paginationBoxStyle ? paginationBoxStyle : {},
         ]}
@@ -169,25 +161,21 @@ export class SliderBox extends Component {
       autoplay,
       parentWidth,
       loopClonesPerSide,
-      autoplayDelay,
-      useScrollView
     } = this.props;
     return (
       <View>
         <Carousel
-          autoplayDelay={autoplayDelay}
-          layout={'default'}
-          useScrollView={useScrollView}
+          layout={"default"}
           data={images}
-          ref={(c) => (this._ref = c)}
+          ref={c => (this._ref = c)}
           loop={circleLoop || false}
           enableSnap={true}
           autoplay={autoplay || false}
           itemWidth={parentWidth || width}
           sliderWidth={parentWidth || width}
           loopClonesPerSide={loopClonesPerSide || 5}
-          renderItem={this._renderItem}
-          onSnapToItem={(index) => this.onSnap(index)}
+          renderItem={item => this._renderItem(item)}
+          onSnapToItem={index => this.onSnap(index)}
           {...this.props}
         />
         {images.length > 1 && this.pagination}
@@ -197,11 +185,10 @@ export class SliderBox extends Component {
 }
 
 const colors = {
-  dotColors: '#BDBDBD',
-  white: '#FFFFFF',
+  dotColors: "#BDBDBD",
+  white: "#FFFFFF",
 };
 
 SliderBox.defaultProps = {
   ImageComponent: Image,
-  LoaderComponent: ActivityIndicator
 };
