@@ -35,7 +35,7 @@ export class SliderBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentImage: 0,
+      currentImage: props.dotIndex ? props.dotIndex : 0,
       loading: [],
     };
     this.onCurrentImagePressedHandler = this.onCurrentImagePressedHandler.bind(
