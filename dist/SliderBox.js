@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  Image,
-  ActivityIndicator,
-  TouchableHighlight,
-  Dimensions,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { ActivityIndicator, Dimensions, Image, TouchableWithoutFeedback, View } from "react-native";
 
 import Carousel, { Pagination } from "react-native-snap-carousel"; //Thank From distributer(s) of this lib
 import styles from "./SliderBox.style";
