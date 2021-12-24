@@ -156,7 +156,7 @@ export class SliderBox extends Component {
       loopClonesPerSide,
     } = this.props;
     return (
-      <View>
+      <View style={{alignItems: 'center'}}>
         <Carousel
           layout={"default"}
           data={images}
